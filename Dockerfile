@@ -26,6 +26,9 @@ RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncur
     git clone https://aur.archlinux.org/zsh-zim-git.git /tmp/build/zsh-zim-git && \
     git clone https://aur.archlinux.org/xml2.git /tmp/build/xml2
 
+# Set permissions for temportaly compilation
+RUN chmod -R 777 /tmp/build
+
 # Compile required tools!
 RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
     cd /tmp/build/lib32-ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U lib32-ncurses5-compat*.tar.xz --noconfirm && \
