@@ -26,7 +26,7 @@ RUN cd /tmp/build/ncurses5-compat-libs && makepkg -s --skippgpcheck && pacman -U
 RUN useradd slave --home-dir=/home/slave && mkdir /opt/jenkins && chown -R slave:users /home/jenkins
 
 # Copy example conf to ssh
-COPY sshd_config/etc/ssh/sshd_config
+COPY sshd_config /etc/ssh/sshd_config
 
 # Add overlay
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.21.4.0/s6-overlay-amd64.tar.gz /tmp/
