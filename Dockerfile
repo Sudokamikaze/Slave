@@ -16,6 +16,9 @@ RUN pacman -Syyu --noconfirm && pacman -S \
 # Before compiling I'll modify /etc/makepkg
 COPY makepkg.conf /etc/makepkg.conf
 
+# Add slave user for SSH connecting
+RUN useradd slave --home-dir=/home/slave && mkdir /home/jenkins && chown -R slave:users /home/jenkins
+
 # Download sources 
 RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
     git clone https://aur.archlinux.org/lib32-ncurses5-compat-libs.git /tmp/build/lib32-ncurses5-compat-libs && \
@@ -24,14 +27,12 @@ RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncur
     git clone https://aur.archlinux.org/xml2.git /tmp/build/xml2
 
 # Compile required tools!
-RUN cd /tmp/build/ncurses5-compat-libs && makepkg -s --skippgpcheck && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
-    cd /tmp/build/lib32-ncurses5-compat-libs && makepkg -s --skippgpcheck && pacman -U lib32-ncurses5-compat*.tar.xz --noconfirm && \
-    cd /tmp/build/crosstool* && makepkg -s --skippgpcheck && pacman -U crosstool*.tar.xz --noconfirm && \
-    cd /tmp/build/zsh-zim* && makepkg -s --skippgpcheck && pacman -U zsh-zim-git*.tar.xz --noconfirm && \
-    cd /tmp/build/xml2 && makepkg -s --skippgpcheck && pacman -U xml*.tar.xz --noconfirm
+RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
+    cd /tmp/build/lib32-ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U lib32-ncurses5-compat*.tar.xz --noconfirm && \
+    cd /tmp/build/crosstool* && su -c 'makepkg -s --skippgpcheck'slave && pacman -U crosstool*.tar.xz --noconfirm && \
+    cd /tmp/build/zsh-zim* && su -c 'makepkg -s --skippgpcheck' slave && pacman -U zsh-zim-git*.tar.xz --noconfirm && \
+    cd /tmp/build/xml2 && su -c 'makepkg -s --skippgpcheck' slave && pacman -U xml*.tar.xz --noconfirm
 
-# Add slave user for SSH connecting
-RUN useradd slave --home-dir=/home/slave && mkdir /home/jenkins && chown -R slave:users /home/jenkins
 
 # Copy example conf to ssh
 COPY sshd_config /etc/ssh/sshd_config
