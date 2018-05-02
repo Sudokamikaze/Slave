@@ -17,11 +17,11 @@ RUN pacman -Syyu --noconfirm && pacman -S \
 COPY makepkg.conf /etc/makepkg.conf
 
 # Download sources 
-RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build && \
-    git clone https://aur.archlinux.org/lib32-ncurses5-compat-libs.git /tmp/build && \
-    git clone https://aur.archlinux.org/crosstool-ng-git.git /tmp/build && \
-    git clone https://aur.archlinux.org/zsh-zim-git.git /tmp/build && \
-    git clone https://aur.archlinux.org/xml2.git /tmp/build
+RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
+    git clone https://aur.archlinux.org/lib32-ncurses5-compat-libs.git /tmp/build/lib32-ncurses5-compat-libs && \
+    git clone https://aur.archlinux.org/crosstool-ng-git.git /tmp/build/crosstool-ng-git && \
+    git clone https://aur.archlinux.org/zsh-zim-git.git /tmp/build/zsh-zim-git && \
+    git clone https://aur.archlinux.org/xml2.git /tmp/build/xml2
 
 # Compile required tools!
 RUN cd /tmp/build/ncurses5-compat-libs && makepkg -s --skippgpcheck && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
