@@ -2,6 +2,9 @@ FROM archlinux/base:latest
 MAINTAINER Sudokamikaze <Sudokamikaze@protonmail.com>
 
 ENV Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
+ENV Jenkins_Node_Name="Builder"
+ENV Jenkins_Master_IP="10.7.0.20"
+ENV Jenkins_Master_Port="8090"
 
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf
@@ -12,7 +15,7 @@ RUN pacman -Syyu --noconfirm && pacman -S \
     git gnupg flex bison maven gradle gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
-    lib32-ncurses lib32-readline ninja ffmpeg lzop pngcrush imagemagick openssh \
+    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget \
     --noconfirm --needed
 
 # Before compiling I'll modify /etc/makepkg
@@ -41,7 +44,7 @@ RUN rm -rf /tmp/build && \
     rm -rf /var/cache/pacman/pkg
 
 # Download latest slave.jar
-ADD http://10.7.0.20:8090/jnlpJars/slave.jar /bin/slave.jar
+ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
 
 COPY slave_run.sh /bin/slave
 RUN chmod +x /bin/slave && chmod 755 /bin/slave.jar
