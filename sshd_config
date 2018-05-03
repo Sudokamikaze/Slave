@@ -28,11 +28,11 @@ HostKey /etc/ssh/ssh_host_ed25519_key
 
 # Authentication:
 
-LoginGraceTime 2m
+#LoginGraceTime 2m
 PermitRootLogin prohibit-password
-StrictModes yes
-MaxAuthTries 2
-MaxSessions 10
+#StrictModes yes
+#MaxAuthTries 2
+#MaxSessions 10
 
 #PubkeyAuthentication yes
 
@@ -54,8 +54,8 @@ AuthorizedKeysFile	.ssh/authorized_keys
 #IgnoreRhosts yes
 
 # To disable tunneled clear text passwords, change to no here!
-#PasswordAuthentication yes
-#PermitEmptyPasswords no
+PasswordAuthentication yes
+PermitEmptyPasswords yes
 
 # Change to no to disable s/key passwords
 ChallengeResponseAuthentication no
@@ -79,7 +79,7 @@ ChallengeResponseAuthentication no
 # If you just want the PAM account and session checks to run without
 # PAM authentication, then enable this but set PasswordAuthentication
 # and ChallengeResponseAuthentication to 'no'.
-UsePAM yes
+#UsePAM yes
 
 #AllowAgentForwarding yes
 #AllowTcpForwarding yes

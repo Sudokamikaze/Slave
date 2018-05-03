@@ -41,7 +41,7 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
 COPY sshd_config /etc/ssh/sshd_config
 
 # Copy my favorite ZSH config
-COPY zshrc /home/slave/.zshrc
+COPY zshrc /home/jenkins/.zshrc
 
 # Change slave's shell
 RUN usermod -s zsh slave
