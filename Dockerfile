@@ -53,6 +53,9 @@ RUN rm -rf /tmp/build && \
 # Generate SSH keys
 RUN /usr/bin/ssh-keygen -A
 
+# Set slave's password to root
+RUN echo "slave:root" | chpasswd
+
 EXPOSE 21
 
 CMD ["/usr/bin/sshd", "-D"]
