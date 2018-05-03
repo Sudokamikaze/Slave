@@ -1,6 +1,8 @@
 FROM archlinux/base:latest
 MAINTAINER Sudokamikaze <Sudokamikaze@protonmail.com>
 
+ENV Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
+
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf
 
@@ -39,11 +41,9 @@ RUN rm -rf /tmp/build && \
     rm -rf /var/cache/pacman/pkg
 
 # Download latest slave.jar
-RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar && \
-    chmod 755 /usr/share/jenkins && \
-    chmod 644 /usr/share/jenkins/slave.jar
+ADD http://10.7.0.20:8090/jnlpJars/slave.jar /bin/slave.jar
 
 COPY slave_run.sh /bin/slave
-RUN chmod +x /bin/slave
+RUN chmod +x /bin/slave && chmod 755 /bin/slave.jar
 
 CMD ["/bin/slave"]
