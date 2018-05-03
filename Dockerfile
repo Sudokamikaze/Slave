@@ -21,7 +21,7 @@ RUN pacman -Syyu --noconfirm && pacman -S \
 COPY makepkg.conf /etc/makepkg.conf
 
 # Add slave user for SSH connecting
-RUN useradd slave --home-dir=/home/slave && mkdir /home/jenkins && chown -R slave:users /home/jenkins
+RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
 
 # Download sources 
 RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
