@@ -50,6 +50,9 @@ RUN usermod -s zsh slave
 RUN rm -rf /tmp/build && \
     rm -rf /var/cache/pacman/pkg
 
+# Generate SSH keys
+RUN /usr/bin/ssh-keygen -A
+
 EXPOSE 21
 
 CMD ["/usr/bin/sshd", "-D"]
