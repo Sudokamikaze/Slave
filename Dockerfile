@@ -1,9 +1,6 @@
 FROM archlinux/base:latest
 MAINTAINER Sudokamikaze <Sudokamikaze@protonmail.com>
 
-# Set s6-overlay version
-ENV S6_OVERLAY v1.21.4.0
-
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf
 
@@ -40,7 +37,6 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
     cd /tmp/build/zsh-zim* && su -c 'makepkg -s --skippgpcheck' slave && pacman -U zsh-zim-git*.tar.xz --noconfirm && \
     cd /tmp/build/xml2 && su -c 'makepkg -s --skippgpcheck' slave && pacman -U xml*.tar.xz --noconfirm
 
-
 # Copy example conf to ssh
 COPY sshd_config /etc/ssh/sshd_config
 
@@ -50,18 +46,10 @@ COPY zshrc /home/slave/.zshrc
 # Change slave's shell
 RUN usermod -s zsh slave
 
-# Add overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY/s6-overlay-amd64.tar.gz /tmp/
-RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
-
 # Cleanup after all
 RUN rm -rf /tmp/build && \
-    rm -rf /var/cache/pacman/pkg && \
-    rm /tmp/s6-overlay-amd64.tar.gz
-
-# Fixin' stuff
-RUN bash /usr/local/sbin/fix-bins.sh
+    rm -rf /var/cache/pacman/pkg
 
 EXPOSE 21
 
-ENTRYPOINT ["/init"]
+CMD ["/usr/bin/sshd", "-D"]
