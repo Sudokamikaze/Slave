@@ -1,6 +1,9 @@
 FROM archlinux/base:latest
 MAINTAINER Sudokamikaze <Sudokamikaze@protonmail.com>
 
+# Set s6-overlay version
+ENV S6_OVERLAY v1.21.4.0
+
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf
 
@@ -48,11 +51,13 @@ COPY zshrc /home/slave/.zshrc
 RUN usermod -s zsh slave
 
 # Add overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.21.4.0/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY/s6-overlay-amd64.tar.gz /tmp/
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 
 # Cleanup after all
 RUN rm -rf /tmp/build && rm -rf /var/cache/pacman/pkg && rm /tmp/s6-overlay-amd64.tar.gz
 
+# Fixin' stuff
+RUN sh /usr/local/sbin/fix-bins.sh
+
 ENTRYPOINT ["/init"]
-CMD ["sshd"]
