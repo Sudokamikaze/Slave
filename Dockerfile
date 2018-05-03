@@ -55,9 +55,13 @@ ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY/
 RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C /
 
 # Cleanup after all
-RUN rm -rf /tmp/build && rm -rf /var/cache/pacman/pkg && rm /tmp/s6-overlay-amd64.tar.gz
+RUN rm -rf /tmp/build && \
+    rm -rf /var/cache/pacman/pkg && \
+    rm /tmp/s6-overlay-amd64.tar.gz
 
 # Fixin' stuff
-RUN sh /usr/local/sbin/fix-bins.sh
+RUN bash /usr/local/sbin/fix-bins.sh
+
+EXPOSE 21
 
 ENTRYPOINT ["/init"]
