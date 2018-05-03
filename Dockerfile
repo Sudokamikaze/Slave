@@ -6,7 +6,7 @@ COPY pacman.conf /etc/pacman.conf
 
 # Update packman's base before installing anything
 RUN pacman -Syyu --noconfirm && pacman -S \
-    base-devel gcc-multilib lib32-gcc-libs gcc-libs lib32-glibc \
+    base-devel gcc-multilib lib32-gcc-libs gcc-libs lib32-glibc help2man \
     git gnupg flex bison maven gradle gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
