@@ -11,7 +11,6 @@ RUN pacman -Syyu --noconfirm && pacman -S \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
     lib32-ncurses lib32-readline ninja ffmpeg lzop pngcrush imagemagick openssh \
-    zsh \
     --noconfirm --needed
 
 # Before compiling I'll modify /etc/makepkg
@@ -24,7 +23,6 @@ RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R sl
 RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
     git clone https://aur.archlinux.org/lib32-ncurses5-compat-libs.git /tmp/build/lib32-ncurses5-compat-libs && \
     git clone https://aur.archlinux.org/crosstool-ng-git.git /tmp/build/crosstool-ng-git && \
-    git clone https://aur.archlinux.org/zsh-zim-git.git /tmp/build/zsh-zim-git && \
     git clone https://aur.archlinux.org/xml2.git /tmp/build/xml2
 
 # Set permissions for temportaly compilation
@@ -34,28 +32,18 @@ RUN chmod -R 777 /tmp/build
 RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
     cd /tmp/build/lib32-ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U lib32-ncurses5-compat*.tar.xz --noconfirm && \
     cd /tmp/build/crosstool* && su -c 'makepkg -s --skippgpcheck' slave && pacman -U crosstool*.tar.xz --noconfirm && \
-    cd /tmp/build/zsh-zim* && su -c 'makepkg -s --skippgpcheck' slave && pacman -U zsh-zim-git*.tar.xz --noconfirm && \
     cd /tmp/build/xml2 && su -c 'makepkg -s --skippgpcheck' slave && pacman -U xml*.tar.xz --noconfirm
-
-# Copy example conf to ssh
-COPY sshd_config /etc/ssh/sshd_config
-
-# Copy my favorite ZSH config
-COPY zshrc /home/jenkins/.zshrc
-
-# Change slave's shell
-RUN usermod -s zsh slave
 
 # Cleanup after all
 RUN rm -rf /tmp/build && \
     rm -rf /var/cache/pacman/pkg
 
-# Generate SSH keys
-RUN /usr/bin/ssh-keygen -A
+# Download latest slave.jar
+RUN curl --create-dirs -sSLo /usr/share/jenkins/slave.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar && \
+    chmod 755 /usr/share/jenkins && \
+    chmod 644 /usr/share/jenkins/slave.jar
 
-# Set slave's password to root
-RUN echo 'slave:slave' | chpasswd
+COPY slave_run.sh /bin/slave
+RUN chmod +x /bin/slave
 
-EXPOSE 22
-
-CMD ["/usr/bin/sshd", "-D"]
+CMD ["/bin/slave"]
