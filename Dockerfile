@@ -18,8 +18,10 @@ RUN pacman -Syyu --noconfirm && pacman -S \
     lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget \
     --noconfirm --needed
 
-# Before compiling I'll modify /etc/makepkg
-COPY makepkg.conf /etc/makepkg.conf
+# Automatically ajust -jobs parameter in config and also set some optimizations
+RUN sed -i 's|#MAKEFLAGS='"-j2"'|MAKEFLAGS='"-j$(nproc)"'|g' /etc/makepkg.conf && \
+    sed -i 's|CFLAGS='"-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"'|CFLAGS='"-march=native -O3 -pipe -fstack-protector-strong -fno-plt"'|g' /etc/makepkg.conf && \
+    sed -i 's|CXXFLAGS='"-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"'|CXXFLAGS='"${CFLAGS}"'|g' /etc/makepkg.conf
 
 # Add slave user for SSH connecting
 RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
