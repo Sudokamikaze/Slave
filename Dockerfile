@@ -15,7 +15,7 @@ RUN pacman -Syyu --noconfirm && pacman -S \
     git gnupg flex bison maven gradle gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
-    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget \
+    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh \
     --noconfirm --needed
 
 # Automatically ajust -jobs parameter in config and also set some optimizations
