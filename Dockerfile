@@ -1,6 +1,8 @@
 FROM archlinux/base:latest
 MAINTAINER Sudokamikaze <Sudokamikaze@protonmail.com>
 
+ENV TINI_VERSION v0.18.0
+
 ENV Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
 ENV Jenkins_Node_Name="Builder"
 ENV Jenkins_Master_IP="10.7.0.20"
@@ -51,7 +53,10 @@ RUN rm -rf /tmp/build && \
 # Download latest slave.jar
 ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
 
-COPY slave_run.sh /bin/slave
-RUN chmod +x /bin/slave && chmod 755 /bin/slave.jar
+# Add simple init
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
 
-CMD ["/bin/slave"]
+USER slave
+
+ENTRYPOINT ["/tini", "--", "java -jar /bin/slave.jar -jnlpUrl http://$Jenkins_Master_IP:$Jenkins_Master_Port/computer/$Jenkins_Node_Name/slave-agent.jnlp -secret $Jenkins_Secret -workDir '/home/jenkins/'"]
