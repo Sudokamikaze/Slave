@@ -59,4 +59,4 @@ RUN chmod +x /tini
 
 USER slave
 
-ENTRYPOINT ["/tini", "--", "java -jar /bin/slave.jar -jnlpUrl http://$Jenkins_Master_IP:$Jenkins_Master_Port/computer/$Jenkins_Node_Name/slave-agent.jnlp -secret $Jenkins_Secret -workDir '/home/jenkins/'"]
+ENTRYPOINT ["/tini", "--", "sh", "-c", "java -jar /bin/slave.jar -jnlpUrl http://$Jenkins_Master_IP:$Jenkins_Master_Port/computer/$Jenkins_Node_Name/slave-agent.jnlp -secret $Jenkins_Secret -workDir '/home/jenkins/'"]
