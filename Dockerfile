@@ -59,6 +59,7 @@ RUN rm -rf /tmp/* && \
 
 # Download latest slave.jar
 ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
+RUN chmod +x /bin/slave.jar && chmod 755 /bin/slave.jar
 
 # Add simple init
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
