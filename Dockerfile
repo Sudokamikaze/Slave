@@ -20,6 +20,13 @@ RUN pacman -Syyu --noconfirm && pacman -S \
     lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano \
     --noconfirm --needed
 
+# Downgrade gcc to 7
+ADD https://archive.archlinux.org/packages/g/gcc/gcc-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-7.pkg.tar.xz
+ADD https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-libs-7.pkg.tar.xz
+ADD https://archive.archlinux.org/packages/l/lib32-gcc-libs/lib32-gcc-libs-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/lib32-gcc-libs-7.pkg.tar.xz
+
+RUN pacman -U /tmp/gcc-7.pkg.tar.xz /tmp/gcc-libs-7.pkg.tar.xz /tmp/lib32-gcc-libs-7.pkg.tar.xz --noconfirm
+
 # Automatically ajust -jobs parameter in config and also set some optimizations
 # RUN sed -i 's|#MAKEFLAGS='"-j2"'|MAKEFLAGS='"-j$(nproc)"'|g' /etc/makepkg.conf && \
 #    sed -i 's|CFLAGS='"-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"'|CFLAGS='"-march=native -O3 -pipe -fstack-protector-strong -fno-plt"'|g' /etc/makepkg.conf && \
@@ -47,7 +54,7 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
     cd /tmp/build/xml2 && su -c 'makepkg -s --skippgpcheck' slave && pacman -U xml*.tar.xz --noconfirm
 
 # Cleanup after all
-RUN rm -rf /tmp/build && \
+RUN rm -rf /tmp/* && \
     rm -rf /var/cache/pacman/pkg
 
 # Download latest slave.jar
