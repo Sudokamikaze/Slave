@@ -24,19 +24,12 @@ RUN pacman -Syyu --noconfirm && pacman -S \
 ADD https://archive.archlinux.org/packages/g/gcc/gcc-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-7.pkg.tar.xz
 ADD https://archive.archlinux.org/packages/g/gcc-libs/gcc-libs-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-libs-7.pkg.tar.xz
 ADD https://archive.archlinux.org/packages/l/lib32-gcc-libs/lib32-gcc-libs-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/lib32-gcc-libs-7.pkg.tar.xz
-
 RUN pacman -U /tmp/gcc-7.pkg.tar.xz /tmp/gcc-libs-7.pkg.tar.xz /tmp/lib32-gcc-libs-7.pkg.tar.xz --noconfirm
 
 # Automatically ajust -jobs parameter in config and also set some optimizations
-# RUN sed -i 's|#MAKEFLAGS='"-j2"'|MAKEFLAGS='"-j$(nproc)"'|g' /etc/makepkg.conf && \
-#    sed -i 's|CFLAGS='"-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"'|CFLAGS='"-march=native -O3 -pipe -fstack-protector-strong -fno-plt"'|g' /etc/makepkg.conf && \
-#    sed -i 's|CXXFLAGS='"-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"'|CXXFLAGS='"${CFLAGS}"'|g' /etc/makepkg.conf
-
-# Before compiling I'll modify /etc/makepkg
-COPY makepkg.conf /etc/makepkg.conf
-
-# Add slave user for SSH connecting
-RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
+RUN sed -i 's|#MAKEFLAGS="-j2"|MAKEFLAGS="-j$(nproc)"|g' /etc/makepkg.conf && \
+    sed -i 's|CFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"|CFLAGS="-march=native -O3 -pipe -fstack-protector-strong -fno-plt"|g' /etc/makepkg.conf && \
+    sed -i 's|CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"|CXXFLAGS="${CFLAGS}"|g' /etc/makepkg.conf
 
 # Download sources 
 RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
@@ -56,6 +49,9 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
 # Cleanup after all
 RUN rm -rf /tmp/* && \
     rm -rf /var/cache/pacman/pkg
+
+# Add slave user for connecting
+RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
 
 # Download latest slave.jar
 ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
