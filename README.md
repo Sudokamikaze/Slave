@@ -31,6 +31,7 @@ When you accnowledged with these information let's begin to initial procedures
 
 ```
     docker build \
+    --no-cache \
     --build-arg Jenkins_Secret="Your_Secret here" \
     --build-arg Jenkins_Node_Name="Your node name here" \
     --build-arg Jenkins_Master_IP="Your Master Jenkins ip here" \
