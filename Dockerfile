@@ -31,6 +31,9 @@ RUN sed -i 's|#MAKEFLAGS="-j2"|MAKEFLAGS="-j$(nproc)"|g' /etc/makepkg.conf && \
     sed -i 's|CFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"|CFLAGS="-march=native -O3 -pipe -fstack-protector-strong -fno-plt"|g' /etc/makepkg.conf && \
     sed -i 's|CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"|CXXFLAGS="${CFLAGS}"|g' /etc/makepkg.conf
 
+# Add slave user for connecting
+RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
+
 # Download sources 
 RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
     git clone https://aur.archlinux.org/lib32-ncurses5-compat-libs.git /tmp/build/lib32-ncurses5-compat-libs && \
@@ -49,9 +52,6 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
 # Cleanup after all
 RUN rm -rf /tmp/* && \
     rm -rf /var/cache/pacman/pkg
-
-# Add slave user for connecting
-RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
 
 # Download latest slave.jar
 ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
