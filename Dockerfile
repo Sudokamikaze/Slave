@@ -17,7 +17,7 @@ RUN pacman -Syyu --noconfirm && pacman -S \
     git gnupg flex bison gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
-    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano \
+    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano net-tools \
     --noconfirm --needed
 
 # Downgrade gcc to 7
