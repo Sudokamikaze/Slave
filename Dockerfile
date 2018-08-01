@@ -2,11 +2,11 @@ FROM archlinux/base:latest
 LABEL maintainer="Sudokamikaze <Sudokamikaze@protonmail.com>"
 
 ENV TINI_VERSION v0.18.0
-
-ENV Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
-ENV Jenkins_Node_Name="Builder"
-ENV Jenkins_Master_IP="10.7.0.20"
-ENV Jenkins_Master_Port="8090"
+# These ARG's are examples. Do not edit them here. Use ARG
+ARG Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
+ARG Jenkins_Node_Name="Builder"
+ARG Jenkins_Master_IP="10.7.0.20"
+ARG Jenkins_Master_Port="8090"
 
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf
