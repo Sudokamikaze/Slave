@@ -1,5 +1,5 @@
 FROM archlinux/base:latest
-MAINTAINER Sudokamikaze <Sudokamikaze@protonmail.com>
+LABEL maintainer="Sudokamikaze <Sudokamikaze@protonmail.com>"
 
 ENV TINI_VERSION v0.18.0
 
@@ -12,13 +12,13 @@ ENV Jenkins_Master_Port="8090"
 COPY pacman.conf /etc/pacman.conf
 
 # Update packman's base before installing anything
-RUN pacman -Syyu --noconfirm && pacman -S \
+RUN pacman -Syyu --noconfirm --noprogressbar && pacman -S \
     base-devel gcc-multilib lib32-gcc-libs gcc-libs lib32-glibc help2man \
     git gnupg flex bison gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
     lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano net-tools \
-    --noconfirm --needed
+    --noconfirm --needed --noprogressbar
 
 # Downgrade gcc to 7
 ADD https://archive.archlinux.org/packages/g/gcc/gcc-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-7.pkg.tar.xz
@@ -54,13 +54,12 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
 RUN rm -rf /tmp/* && \
     rm -rf /var/cache/pacman/pkg
 
-# Download latest slave.jar
-ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
-RUN chmod +x /bin/slave.jar && chmod 755 /bin/slave.jar
-
 # Add simple init
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-RUN chmod +x /tini
+
+# Download latest slave.jar
+ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
+RUN chmod +x /bin/slave.jar && chmod 755 /bin/slave.jar && chmod +x /tini
 
 USER slave
 
