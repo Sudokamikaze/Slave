@@ -7,8 +7,8 @@
     - playbooks/variables.yml
 tasks:
   - name: Check if image exist
-    docker_image:
-    name: Slave
+    docker_container:
+    name: Jenkins_slave
     state: present
     register: result_of_output
 
@@ -42,6 +42,7 @@ tasks:
   - name: Create volume
     docker_volume: 
       name: slave_volume
+    when: result_of_output | bool
 
   - name: Deploy Container
     docker_container:
