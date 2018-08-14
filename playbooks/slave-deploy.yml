@@ -1,7 +1,4 @@
 ---
-
-- import_playbook: ssh-setup.yml
-
 - name: Deploy Jenkins Slave on remote pc
   hosts: remote
   become: True
