@@ -5,13 +5,13 @@ Table of contents
 -----------------
 * [Installation](#installation)
     * [Ansible](#ansible)
-    * [By hands](#by-hands)
+    * [By the hands](#by-the-hands)
 
 
 Installation
 =====
 
-First of all, you must to create an slave on your Jenkins and set to `Launch agent via Java Web Start`. After that you'll get your secret ID which you need to expose to container via ENV
+First of all, you must create an slave on your Jenkins and set to `Launch agent via Java Web Start`. After that you'll get your secret ID which you need to expose to container via ENV
 
 #### Clone this repo
 
@@ -37,10 +37,10 @@ ansible-playbook \
 
 That's it! You've made it!
 
-By hands
+By the hands
 =====
 
-There's some ENVs which need to be corrected:
+There're some ENVs which have to be corrected:
 
 ENV | Description
 -------:|:-------------------------
