@@ -1,0 +1,59 @@
+---
+- name: Deploy Jenkins Slave on remote pc
+  hosts: remote
+  become: True
+  gather_facts: yes
+  vars:
+    Jenkins_Secret: '76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437'
+    Jenkins_Node_Name: 'Builder'
+    Jenkins_Master_IP: '10.7.0.20'
+    Jenkins_Master_Port: '8090'
+tasks:
+  - name: Check if image exist
+    docker_image:
+    name: Slave
+    state: present
+    register: result_of_output
+
+  - name: Set variable for recreation
+    set_fact: re_create: yes
+    when: result_of_output | bool
+
+  - name: Copy Dockerfile and other files
+    file:
+      path=/tmp/Slave
+      state=directory
+    copy: 
+      src=Dockerfile
+      dest=/tmp/Slave/Dockerfile
+    copy:
+      src=pacman.conf
+      dest=/tmp/Slave/pacman.conf
+      
+  - name: Build image
+    docker_image:
+    path: /tmp/Slave/
+    name: Slave
+    tag: latest
+    rm: yes
+    buildargs:
+      Jenkins_Secret: {{ Jenkins_Secret }}
+      Jenkins_Node_Name: {{ Jenkins_Node_Name }}
+      Jenkins_Master_IP: {{ Jenkins_Master_IP }}
+      Jenkins_Master_Port: {{ Jenkins_Master_Port }}
+
+  - name: Create volume
+    docker_volume: 
+      name: slave_volume
+
+  - name: Deploy Container
+    docker_container:
+    name: Jenkins_slave
+    image: slave
+    tag: latest
+    recreate: {{ re_create }}
+    volumes:
+    slave_data: /home/jenkins
+
+- import_playbook: ssh-setup.yml
+...
