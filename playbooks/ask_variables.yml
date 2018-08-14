@@ -1,9 +1,9 @@
 ---
-  - name: Fill variables for deploying
-    hosts: localhost
-    gather_facts: no
+- name: Fill variables for deploying
+  hosts: localhost
+  gather_facts: no
 
-    vars_prompt:
+  vars_prompt:
     - name: template_ssh_host
       prompt: "Enter the IP of deployment server "
       private: no
@@ -35,8 +35,11 @@
       default: "8090"
       private: no
 
-    - name: Create proper files from templates
-      tasks:
-        template: src=templates/inventory.j2 dest=playbooks/inventory       
-        template: src=templates/vars.yml.j2 dest=playbooks/variables.yml
+  tasks:
+    - template:
+        src: ../templates/inventory.j2 
+        dest: ../playbooks/inventory       
+    - template:
+        src: ../templates/variables.yml.j2 
+        dest: ../playbooks/variables.yml
 ...
