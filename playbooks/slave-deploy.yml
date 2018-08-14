@@ -1,13 +1,13 @@
 ---
+
+- import_playbook: ssh-setup.yml
+
 - name: Deploy Jenkins Slave on remote pc
   hosts: remote
   become: True
   gather_facts: yes
-  vars:
-    Jenkins_Secret: '76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437'
-    Jenkins_Node_Name: 'Builder'
-    Jenkins_Master_IP: '10.7.0.20'
-    Jenkins_Master_Port: '8090'
+  vars_files:
+    - playbooks/variables.yml
 tasks:
   - name: Check if image exist
     docker_image:
@@ -54,6 +54,4 @@ tasks:
     recreate: {{ re_create }}
     volumes:
     slave_data: /home/jenkins
-
-- import_playbook: ssh-setup.yml
 ...

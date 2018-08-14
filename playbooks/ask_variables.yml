@@ -4,39 +4,39 @@
     gather_facts: no
 
     vars_prompt:
-    - name: ssh_host
+    - name: template_ssh_host
       prompt: "Enter the IP of deployment server "
       private: no
-    - name: ssh_user
+    - name: template_ssh_user
       prompt: "Enter the username of deployment server "
       private: no
-    - name: ssh_port
+    - name: template_ssh_port
       prompt: "Enter the ssh port "
       default: "22"
       private: no
-    - name: ssh_private_key
+    - name: template_ssh_private_key
       prompt: "Enter the path which leads to your SSH private key "
       default: "~/.ssh/id_rsa"
       private: no
-    - name: Jenkins_Secret
+    - name: template_Jenkins_Secret
       prompt: "Jenkins Secret Key "
       default: "76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437"
       private: no
-    - name: Jenkins_Node_Name
+    - name: template_Jenkins_Node_Name
       prompt: "Future slave name "
       default: "Builder"
       private: no
-    - name: Jenkins_Master_IP
+    - name: template_Jenkins_Master_IP
       prompt: "Enter Master node ip "
       default: "10.7.0.20"
       private: no
-    - name: Jenkins_Master_Port
+    - name: template_Jenkins_Master_Port
       prompt: "Enter Master node port "
       default: "8090"
       private: no
 
-    - name: Create an inventory file
+    - name: Create proper files from templates
       tasks:
         template: src=templates/inventory.j2 dest=playbooks/inventory       
-
+        template: src=templates/vars.yml.j2 dest=playbooks/variables.yml
 ...
