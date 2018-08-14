@@ -1,9 +1,9 @@
-# Note: This playbook based on gitub.com/StreisandEffect/streisand
+# Note: This file based on gitub.com/StreisandEffect/streisand
 ---
 - name: Configure Ansible SSH
   hosts: remote
-  gather_facts: no
+  gather_facts: yes
   tasks: 
   - set_fact: 
-    ansible_ssh_private_key_file: "{{ ssh_private_key }}"
+    ansible_ssh_private_key_file: {{ ssh_private_key }}
 ...
