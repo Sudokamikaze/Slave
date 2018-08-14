@@ -1,0 +1,66 @@
+---
+- name: Deploy Jenkins slave with docker
+  hosts: remote
+  become: True
+  gather_facts: False
+  vars:
+    d_recreate: False
+  vars_files:
+    - variables.yml
+
+  tasks:
+    - name: Determine if container exists
+      shell: 'docker container list -a  | grep -q slave'
+      ignore_errors: True
+      register: container_state
+
+    - name: Set fact for gathering information
+      set_fact:
+        d_recreate: True
+      when: 
+        - container_state is succeeded
+
+    - name: Create directory
+      file:
+        path: /tmp/Slave
+        state: directory
+        mode: 0755
+
+    - name: Copy Dockerfile
+      copy: 
+        src: ../Dockerfile
+        dest: /tmp/Slave
+    
+    - name: Copy pacman.conf 
+      copy:
+        src: ../pacman.conf
+        dest: /tmp/Slave
+          
+    - name: Build image
+      docker_image:
+        path: /tmp/Slave
+        name: slave
+        tag: latest
+        pull: False
+        force: True
+        buildargs:
+          Jenkins_Secret: "{{ Jenkins_Secret }}"
+          Jenkins_Node_Name: "{{ Jenkins_Node_Name }}"
+          Jenkins_Master_IP: "{{ Jenkins_Master_IP }}"
+          Jenkins_Master_Port: "{{ Jenkins_Master_Port }}"
+
+    - name: Create volume
+      docker_volume: 
+        name: slave_volume
+      when: 
+        - (d_recreate != True)
+
+    - name: Deploy Container
+      docker_container:
+        name: Jenkins_slave
+        image: slave
+        tag: latest
+        recreate: "{{ d_recreate }}" 
+        volumes:
+          - slave_data:/home/jenkins[:rw]
+...
