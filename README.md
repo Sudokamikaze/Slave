@@ -3,14 +3,42 @@ Slave - Docker image for fast Jenkins slave creation
 
 Table of contents
 -----------------
-- [Installation](#installation)
+* [Installation](#installation)
+    * [Ansible](#ansible)
+    * [By hands](#by-hands)
+
 
 Installation
-------------
+=====
 
-First of all, you must to create an slave on your Jenkins and set to `Launch agent via Java Web Start`
+First of all, you must to create an slave on your Jenkins and set to `Launch agent via Java Web Start`. After that you'll get your secret ID which you need to expose to container via ENV
 
-After that you'll get your secret ID which you need to expose to container via ENV
+#### Clone this repo
+
+`https://github.com/Sudokamikaze/Slave.git`
+
+
+Ansible
+=====
+
+Run this command and answer some questions before we can start
+```
+ansible-playbook \
+    playbooks/ask_variables.yml
+```
+
+After that, execute main playbook by running this command:
+```
+ansible-playbook \
+    -i playbooks/inventory
+    --extra-vars="playbooks/variables.yml"
+    playbooks/slave-deploy.yml
+```
+
+That's it! You've made it!
+
+By hands
+=====
 
 There's some ENVs which need to be corrected:
 
@@ -22,10 +50,6 @@ Jenkins_Master_IP= | IP of your main node Jenkins
 Jenkins_Master_Port | Port of it
 
 When you accnowledged with these information let's begin to initial procedures
-
-#### Clone this repo
-
-`https://github.com/Sudokamikaze/Slave.git`
 
 #### Run docker build
 
