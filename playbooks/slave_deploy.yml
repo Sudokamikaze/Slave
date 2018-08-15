@@ -39,8 +39,7 @@
     - name: Build image
       docker_image:
         path: /tmp/Slave
-        name: slave
-        tag: latest
+        name: slave:latest
         pull: False
         force: True
         buildargs:
@@ -58,9 +57,8 @@
     - name: Deploy Container
       docker_container:
         name: Jenkins_slave
-        image: slave
-        tag: latest
+        image: slave:latest
         recreate: "{{ d_recreate }}" 
         volumes:
-          - slave_data:/home/jenkins[:rw]
+          - slave_data:/home/jenkins
 ...
