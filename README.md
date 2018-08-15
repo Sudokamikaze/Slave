@@ -15,7 +15,7 @@ First of all, you must create an slave on your Jenkins and set to `Launch agent 
 
 #### Clone this repo
 
-`https://github.com/Sudokamikaze/Slave.git`
+`git clone https://github.com/Sudokamikaze/Slave.git`
 
 
 Ansible
@@ -30,9 +30,8 @@ ansible-playbook \
 After that, execute main playbook by running this command:
 ```
 ansible-playbook \
-    -i playbooks/inventory
-    --extra-vars="playbooks/variables.yml"
-    playbooks/slave-deploy.yml
+    --ask-become-pass \
+    playbooks/slave_deploy.yml
 ```
 
 That's it! You've made it!
