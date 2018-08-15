@@ -1,12 +1,10 @@
 FROM archlinux/base:latest
 LABEL maintainer="Sudokamikaze <Sudokamikaze@protonmail.com>"
 
-ENV TINI_VERSION v0.18.0
-# These ARG's are examples. Do not edit them here. Use ARG
-ARG Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
-ARG Jenkins_Node_Name="Builder"
-ARG Jenkins_Master_IP="10.7.0.20"
-ARG Jenkins_Master_Port="8090"
+ENV Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
+ENV Jenkins_Node_Name="Builder"
+ENV Jenkins_Master_IP="10.7.0.20"
+ENV Jenkins_Master_Port="8090"
 
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf
@@ -54,13 +52,10 @@ RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slav
 RUN rm -rf /tmp/* && \
     rm -rf /var/cache/pacman/pkg
 
-# Add simple init
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
-
 # Download latest slave.jar
 ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
-RUN chmod +x /bin/slave.jar && chmod 755 /bin/slave.jar && chmod +x /tini
+RUN chmod +x /bin/slave.jar && chmod 755 /bin/slave.jar
 
 USER slave
 
-ENTRYPOINT ["/tini", "--", "sh", "-c", "java -jar /bin/slave.jar -jnlpUrl http://$Jenkins_Master_IP:$Jenkins_Master_Port/computer/$Jenkins_Node_Name/slave-agent.jnlp -secret $Jenkins_Secret -workDir '/home/jenkins/'"]
+CMD [ "sh", "-c", "java -jar /bin/slave.jar -jnlpUrl http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/computer/${Jenkins_Node_Name}/slave-agent.jnlp -secret ${Jenkins_Secret} -workDir '/home/jenkins/'" ]

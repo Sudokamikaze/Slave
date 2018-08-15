@@ -42,11 +42,6 @@
         name: slave:latest
         pull: False
         force: True
-        buildargs:
-          Jenkins_Secret: "{{ Jenkins_Secret }}"
-          Jenkins_Node_Name: "{{ Jenkins_Node_Name }}"
-          Jenkins_Master_IP: "{{ Jenkins_Master_IP }}"
-          Jenkins_Master_Port: "{{ Jenkins_Master_Port }}"
 
     - name: Create volume
       docker_volume: 
@@ -59,6 +54,11 @@
         name: Jenkins_slave
         image: slave:latest
         recreate: "{{ d_recreate }}" 
+        env:
+          Jenkins_Secret: "{{ Jenkins_Secret }}"
+          Jenkins_Node_Name: "{{ Jenkins_Node_Name }}"
+          Jenkins_Master_IP: "{{ Jenkins_Master_IP }}"
+          Jenkins_Master_Port: "{{ Jenkins_Master_Port }}"
         volumes:
           - slave_data:/home/jenkins
 ...
