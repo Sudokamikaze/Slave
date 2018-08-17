@@ -18,21 +18,19 @@
       prompt: "Enter the path which leads to your SSH private key "
       default: "~/.ssh/id_rsa"
       private: no
+
     - name: template_Jenkins_Secret
       prompt: "Jenkins Secret Key "
-      default: "76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437"
       private: no
     - name: template_Jenkins_Node_Name
       prompt: "Future slave name "
-      default: "Builder"
       private: no
     - name: template_Jenkins_Master_IP
-      prompt: "Enter Master node ip "
-      default: "10.7.0.20"
+      prompt: "Enter Master node IP "
       private: no
     - name: template_Jenkins_Master_Port
-      prompt: "Enter Master node port "
-      default: "8090"
+      prompt: "Enter Master node Port "
+      default: "8080"
       private: no
 
   tasks:

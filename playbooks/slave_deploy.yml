@@ -14,11 +14,22 @@
       ignore_errors: True
       register: container_state
 
-    - name: Set fact for gathering information
+    - name: Determine if volume exists
+      shell: 'docker volume list | grep -q slave_data'
+      ignore_errors: True
+      register: volume_state
+
+    - name: Set fact for gathering information about container
       set_fact:
         d_recreate: True
       when: 
         - container_state is succeeded
+
+    - name: Create volume
+      docker_volume: 
+        name: slave_volume
+      when:
+        - volume_state is failed
 
     - name: Create directory
       file:
@@ -26,28 +37,18 @@
         state: directory
         mode: 0755
 
-    - name: Copy Dockerfile
-      copy: 
-        src: ../Dockerfile
-        dest: /tmp/Slave
-    
-    - name: Copy pacman.conf 
-      copy:
-        src: ../pacman.conf
-        dest: /tmp/Slave
-          
+    - name: Copy docker things 
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '../Dockerfile', dest: '/tmp/Slave' }
+        - { src: '../pacman.conf', dest: '/tmp/Slave' }
+
     - name: Build image
       docker_image:
         path: /tmp/Slave
         name: slave:latest
         pull: False
         force: True
-
-    - name: Create volume
-      docker_volume: 
-        name: slave_volume
-      when: 
-        - (d_recreate != True)
 
     - name: Deploy Container
       docker_container:
