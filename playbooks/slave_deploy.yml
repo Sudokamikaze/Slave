@@ -9,15 +9,17 @@
     - variables.yml
 
   tasks:
-    - name: Determine if container exists
-      shell: 'docker container list -a  | grep -q slave'
-      ignore_errors: True
-      register: container_state
+    - name: Gather information about docker container
+      block:
+        - name: Determine existance of container
+          shell: 'docker container list -a  | grep -q slave'
+          ignore_errors: True
+          register: container_state
 
-    - name: Determine if volume exists
-      shell: 'docker volume list | grep -q slave_data'
-      ignore_errors: True
-      register: volume_state
+        - name: Determine existance of volume     
+          shell: 'docker volume list | grep -q slave_data'
+          ignore_errors: True
+          register: volume_state
 
     - name: Set fact for gathering information about container
       set_fact:
@@ -31,17 +33,18 @@
       when:
         - volume_state is failed
 
-    - name: Create directory
-      file:
-        path: /tmp/Slave
-        state: directory
-        mode: 0755
-
-    - name: Copy docker things 
-      copy: src={{ item.src }} dest={{ item.dest }}
-      with_items:
-        - { src: '../Dockerfile', dest: '/tmp/Slave' }
-        - { src: '../pacman.conf', dest: '/tmp/Slave' }
+    - name: Copy files
+      block:
+        - name: Create directory
+          file:
+            path: /tmp/Slave
+            state: directory
+            mode: 0755
+        - name: Copy files
+          copy: src={{ item.src }} dest={{ item.dest }}
+          with_items:
+            - { src: '../Dockerfile', dest: '/tmp/Slave' }
+            - { src: '../pacman.conf', dest: '/tmp/Slave' }
 
     - name: Build image
       docker_image:
