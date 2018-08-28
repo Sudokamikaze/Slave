@@ -9,7 +9,7 @@
     - variables.yml
 
   tasks:
-    - name: Gather information about docker container
+    - name: Gather information about docker container & Set fact
       block:
         - name: Determine existance of container
           shell: 'docker container list -a  | grep -q slave'
@@ -21,11 +21,11 @@
           ignore_errors: True
           register: volume_state
 
-    - name: Set fact for gathering information about container
-      set_fact:
-        d_recreate: True
-      when: 
-        - container_state is succeeded
+        - name: Set fact for gathering information about container
+          set_fact:
+            d_recreate: True
+          when: 
+            - container_state is succeeded
 
     - name: Create volume
       docker_volume: 
