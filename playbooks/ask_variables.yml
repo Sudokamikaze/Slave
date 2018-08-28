@@ -34,10 +34,8 @@
       private: no
 
   tasks:
-    - template:
-        src: ../templates/inventory.j2 
-        dest: ../playbooks/inventory       
-    - template:
-        src: ../templates/variables.yml.j2 
-        dest: ../playbooks/variables.yml
+    - template: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '../templates/inventory.j2', dest: '../playbooks/inventory' }
+        - { src: '../templates/variables.yml.j2', dest: '../playbooks/variables.yml' }
 ...
