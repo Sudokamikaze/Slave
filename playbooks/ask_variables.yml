@@ -23,13 +23,13 @@
       prompt: "Jenkins Secret Key "
       private: no
     - name: template_Jenkins_Node_Name
-      prompt: "Future slave name "
+      prompt: "Enter your slave name which you defined in Jenkins "
       private: no
     - name: template_Jenkins_Master_IP
-      prompt: "Enter Master node IP "
+      prompt: "Enter the Master's node IP "
       private: no
     - name: template_Jenkins_Master_Port
-      prompt: "Enter Master node Port "
+      prompt: "Enter the Master's node Port "
       default: "8080"
       private: no
 
