@@ -41,10 +41,10 @@
             state: directory
             mode: 0755
         - name: Copy files
-          copy: src={{ item.src }} dest={{ item.dest }}
-          with_items:
-            - { src: '../Dockerfile', dest: '/tmp/Slave' }
-            - { src: '../pacman.conf', dest: '/tmp/Slave' }
+          copy: src={{ item }} dest=/tmp/Slave
+          loop:
+            - "../Dockerfile"
+            - "../pacman.conf"
 
     - name: Build image
       docker_image:
