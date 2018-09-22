@@ -1,10 +1,15 @@
 FROM archlinux/base:latest
 LABEL maintainer="Sudokamikaze <Sudokamikaze@protonmail.com>"
 
-ENV Jenkins_Secret="76008173e97a1bf2e7f9edd03543f7985b2ae4f0400d9ebcb7d5b3e2ac427437" 
-ENV Jenkins_Node_Name="Builder"
-ENV Jenkins_Master_IP="10.7.0.20"
-ENV Jenkins_Master_Port="8090"
+ARG Jenkins_Secret
+ARG Jenkins_Node_Name
+ARG Jenkins_Master_IP
+ARG Jenkins_Master_Port
+
+ENV Jenkins_Secret=${Jenkins_Secret}
+ENV Jenkins_Node_Name=${Jenkins_Node_Name}
+ENV Jenkins_Master_IP=${Jenkins_Master_IP}
+ENV Jenkins_Master_Port=${Jenkins_Master_Port}
 
 # Enable multilib
 COPY pacman.conf /etc/pacman.conf

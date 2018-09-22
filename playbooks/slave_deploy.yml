@@ -52,7 +52,12 @@
         name: slave:latest
         pull: False
         force: True
-
+        buildargs:
+          Jenkins_Secret: "{{ Jenkins_Secret }}"
+          Jenkins_Node_Name: "{{ Jenkins_Node_Name }}"
+          Jenkins_Master_IP: "{{ Jenkins_Master_IP }}"
+          Jenkins_Master_Port: "{{ Jenkins_Master_Port }}"
+    
     - name: Deploy Container
       docker_container:
         name: Jenkins_slave
