@@ -37,5 +37,5 @@
     - template: src={{ item.src }} dest={{ item.dest }}
       with_items:
         - { src: '../templates/inventory.j2', dest: '../playbooks/inventory' }
-        - { src: '../templates/variables.yml.j2', dest: '../playbooks/variables.yml' }
+        - { src: '../templates/variables.yml.j2', dest: '../vars/variables.yml' }
 ...
