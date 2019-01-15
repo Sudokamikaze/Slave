@@ -4,12 +4,12 @@
   become: True
   gather_facts: False
   vars:
-    d_recreate: False
+    container_recreate: False
   vars_files:
     - ../vars/jenkins_creds.yml
 
   tasks:
-    - name: Gather information about docker container & Set fact
+    - name: Gather information about docker container
       block:
         - name: Determine existance of container
           shell: 'docker container list -a  | grep -q slave'
@@ -21,9 +21,9 @@
           ignore_errors: True
           register: volume_state
 
-        - name: Set fact for gathering information about container
+        - name: Set fact if container exist to trigger recreate option
           set_fact:
-            d_recreate: True
+            container_recreate: True
           when: 
             - container_state is succeeded
 
@@ -61,7 +61,7 @@
       docker_container:
         name: Jenkins_slave
         image: slave:latest
-        recreate: "{{ d_recreate }}" 
+        recreate: "{{ container_recreate }}" 
         env:
           Jenkins_Secret: "{{ Jenkins_Secret }}"
           Jenkins_Node_Name: "{{ Jenkins_Node_Name }}"
