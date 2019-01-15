@@ -11,17 +11,17 @@ ENV Jenkins_Node_Name=${Jenkins_Node_Name}
 ENV Jenkins_Master_IP=${Jenkins_Master_IP}
 ENV Jenkins_Master_Port=${Jenkins_Master_Port}
 
-# Enable multilib
-COPY pacman.conf /etc/pacman.conf
+# Enable Pacman multilib support BEFORE installing anything
+RUN sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf
 
-# Update packman's base before installing anything
-RUN pacman -Syyu --noconfirm --noprogressbar && pacman -S \
+# Install tools for compiling
+RUN pacman -Syyu --noconfirm --noprogressbar && \ 
+    pacman -S --noconfirm --needed --noprogressbar \
     base-devel gcc-multilib lib32-gcc-libs gcc-libs lib32-glibc help2man \
     git gnupg flex bison gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
-    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano net-tools \
-    --noconfirm --needed --noprogressbar
+    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano net-tools
 
 # Downgrade gcc to 7
 ADD https://archive.archlinux.org/packages/g/gcc/gcc-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-7.pkg.tar.xz
@@ -34,8 +34,8 @@ RUN sed -i 's|#MAKEFLAGS="-j2"|MAKEFLAGS="-j$(nproc)"|g' /etc/makepkg.conf && \
     sed -i 's|CFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"|CFLAGS="-march=native -O3 -pipe -fstack-protector-strong -fno-plt"|g' /etc/makepkg.conf && \
     sed -i 's|CXXFLAGS="-march=x86-64 -mtune=generic -O2 -pipe -fstack-protector-strong -fno-plt"|CXXFLAGS="${CFLAGS}"|g' /etc/makepkg.conf
 
-# Add slave user for connecting
-RUN useradd slave --home-dir=/home/jenkins && mkdir /home/jenkins && chown -R slave:users /home/jenkins
+# Add jenkins user for connecting
+RUN useradd jenkins -m --home-dir=/home/jenkins
 
 # Download sources 
 RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncurses5-compat-libs && \
@@ -45,7 +45,7 @@ RUN git clone https://aur.archlinux.org/ncurses5-compat-libs.git /tmp/build/ncur
 
 # Set permissions for temportaly compilation
 RUN chmod -R 777 /tmp/build && \
-    chown -R slave:users /tmp/build
+    chown -R jenkins:users /tmp/build
 
 # Compile required tools!
 RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
@@ -61,6 +61,6 @@ RUN rm -rf /tmp/* && \
 ADD http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/jnlpJars/slave.jar /bin/slave.jar
 RUN chmod +x /bin/slave.jar && chmod 755 /bin/slave.jar
 
-USER slave
+USER jenkins
 
 CMD [ "sh", "-c", "java -jar /bin/slave.jar -jnlpUrl http://${Jenkins_Master_IP}:${Jenkins_Master_Port}/computer/${Jenkins_Node_Name}/slave-agent.jnlp -secret ${Jenkins_Secret} -workDir '/home/jenkins/'" ]

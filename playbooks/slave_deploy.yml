@@ -44,7 +44,6 @@
           copy: src={{ item }} dest=/tmp/Slave
           loop:
             - "../Dockerfile"
-            - "../pacman.conf"
 
     - name: Build image
       docker_image:
