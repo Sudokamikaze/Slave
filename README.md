@@ -1,17 +1,19 @@
-Slave - Docker image for fast Jenkins slave creation
+Slave - Docker image for Jenkins slave creation & deploying
 ==========
 
 Table of contents
 -----------------
 * [Installation](#installation)
     * [Ansible](#ansible)
+       * [Automated](#automated)
+       * [Manual](#manual)
     * [By the hands](#by-the-hands)
 
 
 Installation
 =====
 
-First of all, you must create an slave on your Jenkins and set to `Launch agent via Java Web Start`. After that you'll get your secret ID which you need to expose to container via ENV
+First of all, you must create a slave on your Jenkins and set to `Launch agent via Java Web Start`. After that you'll get your secret ID which you have to expose to container via ENV
 
 #### Clone this repo
 
@@ -21,10 +23,16 @@ First of all, you must create an slave on your Jenkins and set to `Launch agent 
 Ansible
 =====
 
+### Automated
+
+Just run `make` in root directory of the project
+
+### Manual 
+
 Run this command and answer some questions before we can start
 ```
 ansible-playbook \
-    playbooks/ask_variables.yml
+    playbooks/inventory_gen.yml
 ```
 
 After that, execute main playbook by running this command:
@@ -33,8 +41,6 @@ ansible-playbook \
     --ask-become-pass \
     playbooks/slave_deploy.yml
 ```
-
-That's it! You've made it!
 
 By the hands
 =====
@@ -48,7 +54,7 @@ Jenkins_Node_Name= | Name that you'll set in Jenkins slave creation menu
 Jenkins_Master_IP= | IP of your main node Jenkins
 Jenkins_Master_Port | Port of it
 
-When you accnowledged with these information let's begin to initial procedures
+When you acknowledged with this information let's begin building
 
 #### Run docker build
 
@@ -66,10 +72,6 @@ When you accnowledged with these information let's begin to initial procedures
 #### Create volume for projects data
 
 `docker volume create slave_data`
-
-#### (Optional) Create isolated network
-
-`docker network create pipe-to-slave`
 
 #### Issue `run` command
 
