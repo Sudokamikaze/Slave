@@ -1,0 +1,25 @@
+---
+- name: Fill variables for slave deploying
+  hosts: localhost
+  gather_facts: no
+
+  vars_prompt:
+    - name: template_Jenkins_Secret
+      prompt: "Jenkins Secret Key "
+      private: no
+    - name: template_Jenkins_Node_Name
+      prompt: "Enter your slave name which you defined in Jenkins "
+      private: no
+    - name: template_Jenkins_Master_IP
+      prompt: "Enter the Master's node IP "
+      private: no
+    - name: template_Jenkins_Master_Port
+      prompt: "Enter the Master's node Port "
+      default: "8080"
+      private: no
+
+  tasks:
+    - template: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src: '../templates/jenkins_creds.yml.j2', dest: '../vars/jenkins_creds.yml' }
+...

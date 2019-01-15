@@ -6,7 +6,7 @@
   vars:
     d_recreate: False
   vars_files:
-    - ../vars/variables.yml
+    - ../vars/jenkins_creds.yml
 
   tasks:
     - name: Gather information about docker container & Set fact

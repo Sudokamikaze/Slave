@@ -1,5 +1,5 @@
 ---
-- name: Fill variables for deploying
+- name: Generate inventory
   hosts: localhost
   gather_facts: no
 
@@ -19,23 +19,11 @@
       default: "~/.ssh/id_rsa"
       private: no
 
-    - name: template_Jenkins_Secret
-      prompt: "Jenkins Secret Key "
-      private: no
-    - name: template_Jenkins_Node_Name
-      prompt: "Enter your slave name which you defined in Jenkins "
-      private: no
-    - name: template_Jenkins_Master_IP
-      prompt: "Enter the Master's node IP "
-      private: no
-    - name: template_Jenkins_Master_Port
-      prompt: "Enter the Master's node Port "
-      default: "8080"
-      private: no
-
   tasks:
     - template: src={{ item.src }} dest={{ item.dest }}
       with_items:
         - { src: '../templates/inventory.j2', dest: '../playbooks/inventory' }
-        - { src: '../templates/variables.yml.j2', dest: '../vars/variables.yml' }
+  
+- name: Include Jenkins creds 
+  import_playbook: jenkins_creds.yml
 ...
