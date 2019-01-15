@@ -8,6 +8,7 @@ Table of contents
        * [Automaded](#automated)
        * [Manual](#manual)
     * [By the hands](#by-the-hands)
+* [Automated Update](#automated-updates)
 
 
 Installation
@@ -89,4 +90,9 @@ When you acknowledged with this information let's begin building
 ```
 
 That's it! You've made it!
+
+Automated Updates
+=====
+
+As description of project says it has automated updates with customizations
 
