@@ -48,10 +48,10 @@ RUN chmod -R 777 /tmp/build && \
     chown -R jenkins:users /tmp/build
 
 # Compile required tools!
-RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
-    cd /tmp/build/lib32-ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' slave && pacman -U lib32-ncurses5-compat*.tar.xz --noconfirm && \
-    cd /tmp/build/crosstool* && su -c 'makepkg -s --skippgpcheck' slave && pacman -U crosstool*.tar.xz --noconfirm && \
-    cd /tmp/build/xml2 && su -c 'makepkg -s --skippgpcheck' slave && pacman -U xml*.tar.xz --noconfirm
+RUN cd /tmp/build/ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' jenkins && pacman -U ncurses5-compat*.tar.xz --noconfirm && \
+    cd /tmp/build/lib32-ncurses5-compat-libs && su -c 'makepkg -s --skippgpcheck' jenkins && pacman -U lib32-ncurses5-compat*.tar.xz --noconfirm && \
+    cd /tmp/build/crosstool* && su -c 'makepkg -s --skippgpcheck' jenkins && pacman -U crosstool*.tar.xz --noconfirm && \
+    cd /tmp/build/xml2 && su -c 'makepkg -s --skippgpcheck' jenkins && pacman -U xml*.tar.xz --noconfirm
 
 # Cleanup after all
 RUN rm -rf /tmp/* && \
