@@ -21,7 +21,7 @@ RUN pacman -Syyu --noconfirm --noprogressbar && \
     git gnupg flex bison gperf sdl wxgtk \
     squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip repo \
     libxslt python2-virtualenv bc rsync ccache jdk8-openjdk lib32-zlib \
-    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano net-tools
+    lib32-ncurses lib32-readline ninja lzop pngcrush imagemagick wget openssh nano net-tools lzip perl-locale-gettext
 
 # Downgrade gcc to 7
 ADD https://archive.archlinux.org/packages/g/gcc/gcc-7.3.1%2B20180406-1-x86_64.pkg.tar.xz /tmp/gcc-7.pkg.tar.xz
