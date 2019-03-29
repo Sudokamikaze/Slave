@@ -14,10 +14,9 @@
       prompt: "Enter the ssh port "
       default: "22"
       private: no
-    - name: template_ssh_private_key
-      prompt: "Enter the path which leads to your SSH private key "
-      default: "~/.ssh/id_rsa"
-      private: no
+    - name: template_ssh_password
+      prompt: "Enter password "
+      private: yes
 
   tasks:
     - template: src={{ item.src }} dest={{ item.dest }}
